@@ -40,7 +40,7 @@ def fetch_crypto_prices() -> Optional[Dict]:
         print(f"Error parsing JSON response: {e}")
         return None
     
-    def format_price(price: float) -> str:
+def format_price(price: float) -> str:
         """Format price with appropriate decimal places based on value"""
         if price >= 1000:
             return f"${price:,.2f}"
@@ -49,7 +49,7 @@ def fetch_crypto_prices() -> Optional[Dict]:
         else:
             return f"${price:> 6f}"
         
-        if __name__ == "__main__":
+if __name__ == "__main__":
             prices = fetch_crypto_prices()
             if prices:
                 print("\nLIve Cryptocurrency Prices:")
