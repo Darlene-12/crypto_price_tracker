@@ -37,12 +37,12 @@ class AlertHandler:
         for alert in self.alerts:
             if not alert.triggered:
                 current_price = prices.get(alert.crypto, {}). get('usd', 0)
-                if (alert.condition == ' above'and current_price > alert.target_price) or \
-                    (alert. condition == 'below' and current_price < alert.target_price):
+                if (alert.condition == 'above'and current_price > alert.target_price) or \
+                    (alert.condition == 'below' and current_price < alert.target_price):
                     alert.triggered = True
                     self._alert_queue.put(
                         f"Alert: {alert.crypto.upper()} price is {alert.condition}"
-                        f"${alert.taregt_price:,.2f} (Current price: ${current_price:,.2f})"
+                        f"${alert.target_price:,.2f} (Current price: ${current_price:,.2f})"
                     )
     def _start_alert_worker(self):
         def alert_worker():
@@ -51,7 +51,7 @@ class AlertHandler:
                 print(f"\n{alert}\n")
                 self._alert_queue.task_done()
 
-        thread = threading.Thread(target = alert_worker, demon = True)
+        thread = threading.Thread(target = alert_worker, daemon = True)
         thread.start()
 
 # Creating the data storage class
@@ -68,20 +68,19 @@ class DataStorage (ABC):
 class SQLiteStorage(DataStorage):
     def __init__(self, db_path: str = "crypto_prices.db"):
         self.db_path = db_path
-        self._init_db()
+        self._init_db()  # Ensure this method exists
 
-    def __init_db(self):
+    def _init_db(self):
         with sqlite3.connect(self.db_path) as conn:
-            conn.execute(
-                """
+            conn.execute("""
                 CREATE TABLE IF NOT EXISTS prices (
-                crypto TEXT,
-                price REAL,
-                timestap TEXT,
-                PRIMARY KEY (crypto, timestamp)
+                    crypto TEXT,
+                    price REAL,
+                    timestamp TEXT,
+                    PRIMARY KEY (crypto, timestamp)
                 )
-                """
-            )
+            """)
+
     def save_price_data(self, data:Dict) -> None:
         with sqlite3.connect(self.db_path) as conn:
             for crypto, info in data.items():
@@ -91,8 +90,8 @@ class SQLiteStorage(DataStorage):
                 )
     def load_price_data(self) -> Dict:
         with sqlite3.connect(self.db_path) as conn: 
-            cursor = conn.excecute (
-                "SELECT crypto, price, timestap FROM prices"
+            cursor = conn.execute (
+                "SELECT crypto, price, timestamp FROM prices"
                 "WHERE timestamp > datetime ('now', '-1 day')"
             )
             data = {}
@@ -119,6 +118,18 @@ class CryptoPriceFetcher:
         self.alert_handler = AlertHandler()
         self.storage = SQLiteStorage()
 
+    # Add the load_cache method here
+    def load_cache(self) -> Optional[Dict]:
+        if self.cache_file.exists() and (time.time() - self.cache_file.stat().st_mtime) < self.cache_duration:
+            with open(self.cache_file, 'r') as file:
+                return json.load(file)
+        return None
+
+    # Add the _save_cache method here
+    def _save_cache(self, data: Dict) -> None:
+        with open(self.cache_file, 'w') as file:
+            json.dump(data, file)
+
     def fetch_historical_data(
         self, 
         currency: str,
@@ -141,47 +152,50 @@ class CryptoPriceFetcher:
 
             # Convert the data to a Dataframe
             df = pd.DataFrame(data['prices'], columns = ['timestamp', 'price'])
-            df ['timestamp'] = pd.to_datetime(df['timestamp'], units = 'ms')
+            df ['timestamp'] = pd.to_datetime(df['timestamp'], unit = 'ms')
             return df
 
         except Exception as e:
                 print ( f" Error fetching historical data for currency: {e}")
                 return None
-            
+        
+
     def create_price_chart(
         self,
-        currencies: List [str],
+        currencies: List[str],
         days: int = 7,
         vs_currency: str = "usd"
     ) -> None:
-     fig = go.Figure()
+        """Create an interactive price chart using plotly."""
+        fig = go.Figure()
+        
+        for currency in currencies:
+            df = self.fetch_historical_data(currency, days, vs_currency)
+            if df is not None:
+                fig.add_trace(go.Scatter(
+                    x=df['timestamp'],
+                    y=df['price'],
+                    name=currency.upper(),
+                    mode='lines'
+                ))
+        
+        fig.update_layout(
+            title=f"Cryptocurrency Prices ({days} days)",
+            xaxis_title="Date",
+            yaxis_title=f"Price ({vs_currency.upper()})",
+            hovermode='x unified'
+        )
+        
+        # Save the chart
+        fig.write_html("crypto_chart.html")
+        print(f"\nChart saved as crypto_chart.html")
 
-     for currency in currencies:
-        df = self. fetch_historical_data(currency, days, vs_currency)
-        if df is not None:
-            fig.add_trace(go.Scatter(
-                x = df['timestamp'],
-                y=df ['price'],
-                name=currency.upper(),
-                mode = 'lines'
-            ))
-     fig.update_layout(
-        title=f"Cryptocurrency Prices ({days} days)",
-        xaxis_title = "Date",
-        yaxis_title = f"Price ({vs_currency.upper()})",
-        hovermode = 'x unifield'
-     )
-
-     # Save the chart
-
-     fig.write_html("crypto_chart.html")
-     print(f"\nChart saved as crypto_chart.html")
-
-     def set_price_alert(self, crypto: str, target_price: float, condition: str) -> None:
-        if condition not in ['abobve', 'below']:
-            raise ValueError(" Condition must be either be 'above' or 'below;")
-
-        self.alert_handeler. add_alert(crypto, target_price, condition)
+    def set_price_alert(self, crypto: str, target_price: float, condition: str) -> None:
+        """Set a price alert for a cryptocurrency."""
+        if condition not in ['above', 'below']:
+            raise ValueError("Condition must be 'above' or 'below'")
+        
+        self.alert_handler.add_alert(crypto, target_price, condition)
         print(f"Alert set for {crypto.upper()} {condition} ${target_price:,.2f}")
 
     def fetch_prices(
@@ -241,10 +255,10 @@ class CryptoPriceFetcher:
                 print("Returning expired cache data due to error")
                 return cached_data
             return None
-    def get_price_summary(self, days: List[int] = [1,7.30]) -> Dict:
+    def get_price_summary(self, days: List[int] = [1,7,30]) -> Dict:
         summary = {}
         for currency in self.supported_currencies:
-            df = self.fecth_historical_data(currency)
+            df = self.fetch_historical_data(currency)
             if df is not None:
                 summary[currency] = {
                     'current_price': df['price'].iloc[-1],
@@ -259,57 +273,58 @@ class CryptoPriceFetcher:
                         summary[currency]['changes'][f'{day}d'] = None
         return summary
 
-def main ():
-            fetcher = CryptoPriceFetcher()
+def main():
+    fetcher = CryptoPriceFetcher()
 
-            try:
-                fetcher.set_price_alert("bitcoin", 45000, 'above')
-                fetcher.set_price_alert("ethereum", 2000, 'above')
+    try:
+        # Set some price alerts
+        fetcher.set_price_alert("bitcoin", 45000, "above")
+        fetcher.set_price_alert("ethereum", 2000, "above")
 
-                # Fetch the current prices in different flat currencies
-                print("\nFectjing prices in USD, EUR, GBP, JPY, AUD")
-                fetcher.fetch_prices(vs_currency='usd')
-                fetcher.fetch_prices(vs_currency='eur')
-                fetcher.fetch_prices(vs_currency='gbp')
-                fetcher.fetch_prices(vs_currency='jpy')
-                fetcher.fetch_prices(vs_currency='aud')
+        # Fetch the current prices in different fiat currencies
+        print("\nFetching prices in USD, EUR, GBP, JPY, AUD:")
+        fetcher.fetch_prices(vs_currency="usd")
+        fetcher.fetch_prices(vs_currency="eur")
+        fetcher.fetch_prices(vs_currency="gbp")
+        fetcher.fetch_prices(vs_currency="jpy")
+        fetcher.fetch_prices(vs_currency="aud")
 
-                # Fetch the current prices for the supported cryptocurrencies
-                print("\nFetching prices for supported cryptocurrencies")
-                fetcher.fetch_prices()
+        # Fetch the current prices for the supported cryptocurrencies
+        print("\nFetching prices for supported cryptocurrencies:")
+        fetcher.fetch_prices()
 
-                # Fetch the historical data for the supported cryptocurrencies
-                print("\nFetching historical data for supported cryptocurrencies")
+        # Fetch the historical data for the supported cryptocurrencies
+        print("\nFetching historical data for supported cryptocurrencies:")
 
-                # Create the price charts
-                fetcher.create_price_chart(
-                    currencies=["bitcoin", "ethereum", "litecoin", "cardano", "dogecoin"],
-                    days=7
-                )
+        # Create the price charts
+        fetcher.create_price_chart(
+            currencies=["bitcoin", "ethereum", "litecoin", "cardano", "dogecoin"],
+            days=7
+        )
 
-                #  Get the summary of the prices
-                summary = fetcher.get_price_summary()
-                print("\nPrice summary:")
-                for crypto, data in summary.items():
-                    print(f"\n{crypto.upper()}")
-                    print(f"Current price: ${data['current_price']:,.2f}")
-                    for days, change in data['changes'].items():
-                        print(f"{days} Change: {change: + .2f}%")
+        # Get the summary of the prices
+        summary = fetcher.get_price_summary()
+        print("\nPrice Summary:")
+        for crypto, data in summary.items():
+            print(f"\n{crypto.upper()}")
+            print(f"Current Price: ${data['current_price']:,.2f}")
+            for days, change in data['changes'].items():
+                print(f"{days} Change: {change:+.2f}%")
 
-                print("\nMonitoring price alerts(Press Ctrl+C to exit)...")
-                while True:
-                    fetcher.fetch_prices()
-                    time.sleep(60)
+        # Monitor price alerts
+        print("\nMonitoring price alerts (Press Ctrl+C to exit)...")
+        while True:
+            fetcher.fetch_prices()
+            time.sleep(60)
 
-            except KeyboardInterrupt:
-                print("\nExiting...")
-            except Exception as e:
-                print(f"An error occurred: {e}")
+    except KeyboardInterrupt:
+        print("\nExiting...")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     main()
 
-
-
-
-
+# Important notes:
+# Threading and queue: The multitaskers, enabling the program to perform multiple activities simultaneously (e.g., tracking prices and checking alerts without delays).
+# These tools, along with others like dataclasses and abc (abstract base classes), form the backbone of our crypto monitoring system.
