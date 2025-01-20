@@ -2,3 +2,62 @@
 2025-01-19 22:21:14,992 - dash.dash - INFO - Dash is running on http://127.0.0.1:8050/
 
 2025-01-19 22:21:15,867 - __main__ - INFO - Starting Cryptocurrency Price Tracker
+2025-01-20 16:49:47,147 - __main__ - INFO - Starting Cryptocurrency Price Tracker
+2025-01-20 16:49:47,148 - dash.dash - INFO - Dash is running on http://127.0.0.1:8050/
+
+2025-01-20 16:49:47,944 - __main__ - INFO - Starting Cryptocurrency Price Tracker
+2025-01-20 17:02:47,018 - __main__ - INFO - Starting Cryptocurrency Price Tracker
+2025-01-20 17:03:20,754 - __main__ - INFO - Starting Cryptocurrency Price Tracker
+2025-01-20 17:03:20,755 - dash.dash - INFO - Dash is running on http://127.0.0.1:8050/
+
+2025-01-20 17:03:21,388 - __main__ - INFO - Starting Cryptocurrency Price Tracker
+2025-01-20 17:04:18,723 - __main__ - INFO - Alert set: bitcoin below $5.00
+2025-01-20 17:13:06,256 - __main__ - INFO - Starting Cryptocurrency Price Tracker
+2025-01-20 17:13:10,955 - __main__ - INFO - Successfully fetched 31 daily data points for bitcoin (2024-12-22 00:00:00 to 2025-01-20 14:12:52)
+2025-01-20 17:13:31,551 - __main__ - INFO - Successfully fetched 31 daily data points for ethereum (2024-12-22 00:00:00 to 2025-01-20 14:12:59)
+2025-01-20 17:14:10,731 - __main__ - INFO - Successfully fetched 31 daily data points for ethereum (2024-12-22 00:00:00 to 2025-01-20 14:13:37)
+2025-01-20 17:15:11,996 - __main__ - INFO - Successfully fetched 31 daily data points for ethereum (2024-12-22 00:00:00 to 2025-01-20 14:14:39)
+2025-01-20 17:16:11,549 - __main__ - INFO - Successfully fetched 31 daily data points for ethereum (2024-12-22 00:00:00 to 2025-01-20 14:15:10)
+2025-01-20 17:17:12,826 - __main__ - INFO - Successfully fetched 31 daily data points for ethereum (2024-12-22 00:00:00 to 2025-01-20 14:16:38)
+2025-01-20 17:18:52,053 - __main__ - INFO - Starting Cryptocurrency Price Tracker
+2025-01-20 17:19:04,193 - __main__ - INFO - Successfully fetched 31 daily data points for bitcoin (2024-12-22 00:00:00 to 2025-01-20 14:18:36)
+2025-01-20 17:19:04,526 - __main__ - INFO - Successfully fetched 31 daily data points for ethereum (2024-12-22 00:00:00 to 2025-01-20 14:18:36)
+2025-01-20 17:19:59,232 - __main__ - INFO - Starting Cryptocurrency Price Tracker
+2025-01-20 17:22:00,594 - __main__ - INFO - Starting Cryptocurrency Price Tracker
+2025-01-20 17:22:02,847 - __main__ - INFO - Successfully fetched 31 daily data points for bitcoin (2024-12-22 00:00:00 to 2025-01-20 14:21:53)
+2025-01-20 17:22:04,205 - __main__ - INFO - Successfully fetched 31 daily data points for bitcoin (2024-12-22 00:00:00 to 2025-01-20 14:21:53)
+2025-01-20 17:22:23,033 - __main__ - WARNING - Request failed. Retry 1/3 after 1.36s
+2025-01-20 17:22:24,618 - __main__ - WARNING - Request failed. Retry 2/3 after 2.51s
+2025-01-20 17:22:27,377 - __main__ - WARNING - Request failed. Retry 3/3 after 4.93s
+2025-01-20 17:22:32,308 - __main__ - ERROR - Unexpected error fetching data for ethereum: Max retries exceeded
+2025-01-20 17:23:02,564 - __main__ - WARNING - Request failed. Retry 1/3 after 1.88s
+2025-01-20 17:23:05,007 - __main__ - WARNING - Request failed. Retry 2/3 after 2.34s
+2025-01-20 17:23:08,566 - __main__ - WARNING - Request failed. Retry 3/3 after 4.11s
+2025-01-20 17:23:12,681 - __main__ - ERROR - Error fetching prices: Max retries exceeded
+2025-01-20 17:23:21,578 - __main__ - WARNING - Request failed. Retry 1/3 after 1.15s
+2025-01-20 17:23:23,524 - __main__ - INFO - Successfully fetched 31 daily data points for bitcoin (2024-12-22 00:00:00 to 2025-01-20 14:23:02)
+2025-01-20 17:23:28,297 - __main__ - WARNING - Request failed. Retry 1/3 after 1.77s
+2025-01-20 17:23:30,284 - __main__ - WARNING - Request failed. Retry 2/3 after 2.44s
+2025-01-20 17:23:33,976 - __main__ - WARNING - Request failed. Retry 3/3 after 4.96s
+2025-01-20 17:23:38,940 - __main__ - ERROR - Unexpected error fetching data for ethereum: Max retries exceeded
+2025-01-20 17:31:40,547 - __main__ - ERROR - Application error: name 'selected_crypto' is not defined
+2025-01-20 17:38:54,869 - __main__ - INFO - Starting Cryptocurrency Price Tracker
+2025-01-20 17:38:54,870 - dash.dash - INFO - Dash is running on http://127.0.0.1:8050/
+
+2025-01-20 17:38:55,548 - __main__ - INFO - Starting Cryptocurrency Price Tracker
+2025-01-20 17:39:01,496 - __main__ - INFO - Successfully fetched 31 daily data points for bitcoin (2024-12-22 00:00:00 to 2025-01-20 14:38:23)
+2025-01-20 17:39:09,270 - __main__ - INFO - Successfully fetched 31 daily data points for ethereum (2024-12-22 00:00:00 to 2025-01-20 14:38:46)
+2025-01-20 17:39:52,202 - __main__ - WARNING - Request failed. Retry 1/3 after 1.77s
+2025-01-20 17:39:54,363 - __main__ - WARNING - Request failed. Retry 2/3 after 2.42s
+2025-01-20 17:39:57,247 - __main__ - WARNING - Request failed. Retry 3/3 after 4.85s
+2025-01-20 17:40:02,101 - __main__ - ERROR - Unexpected error fetching data for bitcoin: Max retries exceeded
+2025-01-20 17:40:35,342 - __main__ - WARNING - Request failed. Retry 1/3 after 1.27s
+2025-01-20 17:40:37,025 - __main__ - WARNING - Request failed. Retry 2/3 after 2.40s
+2025-01-20 17:40:40,216 - __main__ - WARNING - Request failed. Retry 3/3 after 4.78s
+2025-01-20 17:40:45,001 - __main__ - ERROR - Error fetching prices: Max retries exceeded
+2025-01-20 17:41:37,833 - __main__ - INFO - Starting Cryptocurrency Price Tracker
+2025-01-20 17:41:37,835 - dash.dash - INFO - Dash is running on http://127.0.0.1:8050/
+
+2025-01-20 17:41:38,444 - __main__ - INFO - Starting Cryptocurrency Price Tracker
+2025-01-20 17:41:43,052 - __main__ - INFO - Successfully fetched 31 daily data points for bitcoin (2024-12-22 00:00:00 to 2025-01-20 14:41:14)
+2025-01-20 17:42:45,238 - __main__ - INFO - Successfully fetched 31 daily data points for bitcoin (2024-12-22 00:00:00 to 2025-01-20 14:42:23)
